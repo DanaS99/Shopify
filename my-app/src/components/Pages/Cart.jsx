@@ -11,15 +11,24 @@ function Cart({ product }) {
   const [totalQuantityInCart, setTotalQuantityInCart] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [stockExceeded, setStockExceeded] = useState(false); // New state for stock check
   const addToCartButtonRef = useRef(null);
   const dispatch = useDispatch();
+  const popupRef = useRef(null);
 
   const combinedClickHandler = () => {
-    AddedToShopCart(); // Calls the function that dispatches the cart event
-    handleAddToCart(); // Calls the function that sets loading state and shows popup
+    if (!stockExceeded) {
+      AddedToShopCart(); // Calls the function that dispatches the cart event
+      handleAddToCart(); // Calls the function that sets loading state and shows popup
+    }
   };
 
   const handleAddToCart = () => {
+    if (quantity > recipeDetailsData?.stock) {
+      setStockExceeded(true);
+      return; // Prevent adding to cart if stock is exceeded
+    }
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -30,10 +39,16 @@ function Cart({ product }) {
 
   const handleClosePopup = () => {
     setShowPopup(false);
+    setStockExceeded(false); // Reset stock check when popup closes
   };
 
   const handleClickOutside = (event) => {
-    if (addToCartButtonRef.current && !addToCartButtonRef.current.contains(event.target)) {
+    if (
+      addToCartButtonRef.current &&
+      !addToCartButtonRef.current.contains(event.target) &&
+      popupRef.current &&
+      !popupRef.current.contains(event.target)
+    ) {
       handleClosePopup();
     }
   };
@@ -51,7 +66,9 @@ function Cart({ product }) {
   }, [showPopup]);
 
   const increaseQuantity = () => {
-    setQuantity(quantity + 1);
+    if (quantity < recipeDetailsData?.stock) {
+      setQuantity(quantity + 1);
+    }
   };
 
   const decreaseQuantity = () => {
@@ -62,7 +79,7 @@ function Cart({ product }) {
 
   const handleInputChange = (event) => {
     const value = parseInt(event.target.value, 10);
-    if (!isNaN(value) && value > 0) {
+    if (!isNaN(value) && value > 0 && value <= recipeDetailsData?.stock) {
       setQuantity(value);
     } else {
       setQuantity(1);
@@ -130,54 +147,88 @@ function Cart({ product }) {
                 </button>
               </div>
             </div>
-            {
-              quantity >= recipeDetailsData?.stock && (
-                <span className='text-sm leading-3'>You can't add more {recipeDetailsData?.title} to the cart</span>
-              )
-            }
+            {quantity >= recipeDetailsData?.stock && (
+              <span className='text-sm leading-3'>
+                You can't add more {recipeDetailsData?.title} to the cart
+              </span>
+            )}
           </div>
 
           <div className='mb-6'>
             <button
               ref={addToCartButtonRef}
-              className="w-full py-2 mb-3 bg-white text-black border-2 border-slate-600 rounded hover:border-black relative"
+              className='w-full py-2 mb-3 bg-white text-black border-2 border-slate-600 rounded hover:border-black relative'
               onClick={combinedClickHandler}
+              disabled={totalQuantityInCart >= recipeDetailsData?.stock}
             >
-              {loading ? <img src={loading2} className='animate-spin h-8 w-8 justify-center items-center ml-36'></img> : 'Add to cart'}
+              {loading ? (
+                <img
+                  src={loading2}
+                  className='animate-spin h-8 w-8 justify-center items-center ml-36'
+                ></img>
+              ) : (
+                'Add to cart'
+              )}
             </button>
 
             {showPopup && (
               <div
-                className={`absolute transition-transform duration-300 ease-out transform -translate-y-2 ${
-                  window.innerWidth <= 768 ? 'w-screen top-20 left-0 mx-5' : 'w-96'
+                ref={popupRef} 
+                className={`absolute transition-transform duration-300 ease-out transform ${
+                  window.innerWidth <= 768
+                    ? 'w-screen top-20 left-0 mx-5'
+                    : 'w-96'
                 }`}
                 style={{
-                  top: window.innerWidth > 768 ? addToCartButtonRef.current.getBoundingClientRect().top - 190 : '',
-                  left: window.innerWidth > 768 ? addToCartButtonRef.current.getBoundingClientRect().left : '',
+                  top:
+                    window.innerWidth > 768
+                      ? `${
+                          addToCartButtonRef.current.getBoundingClientRect()
+                            .top - 190
+                        }px`
+                      : '',
+                  left:
+                    window.innerWidth > 768
+                      ? `${
+                          addToCartButtonRef.current.getBoundingClientRect()
+                            .left
+                        }px`
+                      : '',
+                  zIndex: 2000, // Increased z-index to ensure it's on top
+                  pointerEvents: 'auto', // Ensure it can be interacted with
                 }}
               >
-                <div className="bg-white p-6 rounded-none w-full relative z-50 border-2 border-black">
-                  <div className="flex justify-between items-center mb-4">
+                <div className='bg-white p-6 rounded-none w-full relative border-2 border-black'>
+                  <div className='flex justify-between items-center mb-4'>
                     <span> ✔ Item added to your cart</span>
-                    <button onClick={handleClosePopup} className="text-gray-400 text-3xl">
+                    <button
+                      onClick={handleClosePopup}
+                      className='text-gray-400 text-3xl'
+                    >
                       &times;
                     </button>
                   </div>
-                  <div className="flex items-center mb-4">
-                    <img src={recipeDetailsData?.images} alt={recipeDetailsData?.title} className="w-16 h-16 mr-4" />
+                  <div className='flex items-center mb-4'>
+                    <img
+                      src={recipeDetailsData?.images}
+                      alt={recipeDetailsData?.title}
+                      className='w-16 h-16 mr-4'
+                    />
                     <span>{recipeDetailsData?.title}</span>
                   </div>
-                  <div className="flex flex-col">
-                    <Link to={'/cart/allproducts'}>
-                      <button className="w-full py-2 mb-3 bg-white text-black border-2 border-black rounded">
+                  <div className='flex flex-col'>
+                    <Link to='/cart/allproducts'>
+                      <button className='w-full py-2 mb-3 bg-white text-black border-2 border-black rounded'>
                         View my cart ({totalQuantityInCart})
                       </button>
                     </Link>
-                    <button className="w-full py-2 bg-buynowButton text-black rounded hover:h-11">
+                    <button className='w-full py-2 bg-buynowButton text-black rounded hover:h-11'>
                       Check out
                     </button>
-                    <Link to={'/'}>
-                      <button className="w-full py-2 text-black underline underline-offset-2">Continue shopping</button>
+                    <Link to='/'>
+                      <button className='w-full py-2 text-black underline underline-offset-2'>
+                        Continue shopping
+                      </button>
                     </Link>
                   </div>
                 </div>
@@ -198,7 +249,9 @@ function Cart({ product }) {
             .
           </p>
 
-          <p className='text-gray-600 mb-4 text-sm leading-6'>{recipeDetailsData?.description}</p>
+          <p className='text-gray-600 mb-4 text-sm leading-6'>
+            {recipeDetailsData?.description}
+          </p>
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ function RecipeItem({ item }) {
         <img
           src={item?.images}
           alt={item?.title}
-          className='w-full h-full object-cover rounded-xl transform transition-transform hover:scale-105'
+          className='w-full h-full object-cover  pointer-events-auto rounded-xl transform transition-transform hover:scale-105'
         />
         {item?.stock === 0 && (
           <span className='absolute bottom-2 left-2 bg-black text-white text-xs font-semibold px-2 py-1 rounded'>

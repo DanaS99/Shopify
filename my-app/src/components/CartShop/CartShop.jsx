@@ -4,6 +4,9 @@ import { bin } from '../../assets';
 import { removeFromCart, updateQuantity } from '../Store/Slices/CartSlice';
 
 const CartShop = ({ cartItem, updateTotalCart }) => {
+  console.log('Rendering CartShop component');
+  console.log('cartItem:', cartItem);
+
   const [quantity, setQuantity] = useState(cartItem.quantity || 1);
   const [total, setTotal] = useState(cartItem.price * quantity);
 
@@ -14,16 +17,33 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
     updateTotalCart();
   };
 
+  useEffect(() => {
+    console.log('Initial quantity in useEffect:', quantity);
+    console.log('Initial stock in useEffect:', cartItem.stock);
+  }, []);
+
+  useEffect(() => {
+    updateTotal(quantity);
+  }, [quantity]);
+
   const handleIncreaseQuantity = () => {
-    const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
-    dispatch(updateQuantity({ id: cartItem.id, quantity: newQuantity }));
-    updateTotal(newQuantity);
+    console.log('Attempting to increase quantity:', quantity);
+    console.log('Cart item stock:', cartItem.stock);
+    if (quantity < cartItem.stock) {
+      const newQuantity = quantity + 1;
+      console.log('New quantity:', newQuantity);
+      setQuantity(newQuantity);
+      dispatch(updateQuantity({ id: cartItem.id, quantity: newQuantity }));
+      updateTotal(newQuantity);
+    } else {
+      console.log('Cannot increase, stock limit reached.');
+    }
   };
 
   const handleDecreaseQuantity = () => {
     if (quantity > 1) {
       const newQuantity = quantity - 1;
+      console.log('New quantity:', newQuantity);
       setQuantity(newQuantity);
       dispatch(updateQuantity({ id: cartItem.id, quantity: newQuantity }));
       updateTotal(newQuantity);
@@ -32,7 +52,8 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
 
   const handleInputChange = (event) => {
     const value = parseInt(event.target.value, 10);
-    if (!isNaN(value) && value > 0) {
+    console.log('Input change value:', value);
+    if (!isNaN(value) && value > 0 && value <= cartItem.stock) {
       setQuantity(value);
       dispatch(updateQuantity({ id: cartItem.id, quantity: value }));
       updateTotal(value);
@@ -48,10 +69,6 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
     updateTotalCart();
   };
 
-  useEffect(() => {
-    updateTotal(quantity);
-  }, [quantity]);
-
   return (
     <div className='p-4 sm:p-6 lg:p-8'>
       <div className='flex flex-col lg:flex-row justify-between items-center mb-4'>
@@ -61,8 +78,12 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
           className='w-full sm:w-36 lg:w-48 h-auto object-cover mb-4 lg:mb-0'
         />
         <div className='flex-1 lg:ml-4'>
-          <h2 className='text-black text-base sm:text-lg lg:text-xl mb-2'>{cartItem?.title}</h2>
-          <span className='text-gray-500 text-sm sm:text-base lg:text-lg'>${cartItem?.price}</span>
+          <h2 className='text-black text-base sm:text-lg lg:text-xl mb-2'>
+            {cartItem?.title}
+          </h2>
+          <span className='text-gray-500 text-sm sm:text-base lg:text-lg'>
+            ${cartItem?.price}
+          </span>
         </div>
         <div className='flex items-center justify-between w-full lg:w-2/5 mt-4 lg:mt-0'>
           <div className='relative flex items-center bg-white px-2 py-1 text-black border-2 border-slate-600 rounded'>
@@ -75,20 +96,22 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
               onChange={handleInputChange}
               className='mx-2 w-12 text-center no-spinners'
             />
-            <button onClick={handleIncreaseQuantity} className='px-2 py-1'>
+            <button onClick={handleIncreaseQuantity} disabled={quantity >= cartItem.stock} className='px-2 py-1'>
               +
             </button>
-            {
-              quantity >= cartItem?.stock && (
-                <span className='text-sm'>You can't add more {cartItem?.title} to the cart</span>
-              )
-            }
           </div>
-          
+          {quantity >= cartItem?.stock && (
+              <span className='text-sm'>
+                You can't add more {cartItem?.title} to the cart
+              </span>
+            )}
+
           <button onClick={handleRemoveFromCart} className='ml-4'>
             <img src={bin} className='w-5 h-5' alt='Remove' />
           </button>
-          <span className='text-black text-base sm:text-lg lg:text-xl ml-4'>${total.toFixed(2)}</span>
+          <span className='text-black text-base sm:text-lg lg:text-xl ml-4'>
+            ${total.toFixed(2)}
+          </span>
         </div>
       </div>
       <hr className='mb-8' />
@@ -97,3 +120,5 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
 };
 
 export default CartShop;
+
+
