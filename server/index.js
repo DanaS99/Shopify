@@ -10,6 +10,12 @@ app.use(bodyParser.json());
 
 app.use('/api', itemRoutes);
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
