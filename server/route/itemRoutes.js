@@ -6,6 +6,6 @@ const { purchaseItem, deleteItem, getItem, getAllItems } = require('../controlle
 router.post('/purchase', purchaseItem);
 router.delete('/delete/:id', deleteItem);
 router.get('/item/:id', getItem);
-router.get('/items', getAllItems); // New route to get all items
+router.get('/items', getAllItems); 
 
 module.exports = router;

@@ -26,6 +26,8 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
     updateTotal(quantity);
   }, [quantity]);
 
+
+
   const handleIncreaseQuantity = () => {
     console.log('Attempting to increase quantity:', quantity);
     console.log('Cart item stock:', cartItem.stock);
@@ -64,10 +66,35 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
     }
   };
 
-  const handleRemoveFromCart = () => {
-    dispatch(removeFromCart(cartItem.id));
-    updateTotalCart();
+  // const handleRemoveFromCart = () => {
+  //   dispatch(removeFromCart(cartItem.id));
+  //   updateTotalCart();
+  // };
+
+  const handleRemoveFromCart = async () => {
+    try {
+      if (!cartItem.id) {
+        console.error('cartItem does not have an id field. Cannot delete.');
+        return;
+      }
+  
+      const response = await fetch(`http://localhost:5000/api/delete/${cartItem.id}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        dispatch(removeFromCart(cartItem.id));
+        updateTotalCart();
+      } else {
+        const errorText = await response.text();
+        console.error(`Failed to delete item from the database: ${errorText}`);
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
   };
+  
+  
 
   return (
     <div className='p-4 sm:p-6 lg:p-8'>

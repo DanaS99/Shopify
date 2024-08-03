@@ -4,8 +4,9 @@ const ItemSchema = new mongoose.Schema({
   id: Number,
   title: String,
   price: Number,
-  quantity: Number,
+  stock: Number,
   totalPrice: Number,
+  images: String,
   purchasedAt: { type: Date, default: Date.now }
 });
 
