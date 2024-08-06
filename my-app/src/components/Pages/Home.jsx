@@ -10,7 +10,7 @@ function Home() {
   async function fetchProducts() {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/items'); // Update this URL to your backend endpoint
+      const response = await fetch('http://localhost:5000/api/items');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

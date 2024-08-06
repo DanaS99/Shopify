@@ -11,7 +11,7 @@ function Cart({ product }) {
   const [totalQuantityInCart, setTotalQuantityInCart] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [stockExceeded, setStockExceeded] = useState(false); // New state for stock check
+  const [stockExceeded, setStockExceeded] = useState(false);
   const addToCartButtonRef = useRef(null);
   const dispatch = useDispatch();
   const popupRef = useRef(null);
@@ -94,9 +94,21 @@ function Cart({ product }) {
     dispatch(addToCart(itemToAdd));
   }
 
+  // useEffect(() => {
+  //   async function getRecipeDetails() {
+  //     const response = await fetch(`https://dummyjson.com/products/${id}`);
+  //     const data = await response.json();
+
+  //     if (data) {
+  //       setrecipeDetailsData(data);
+  //     }
+  //   }
+  //   getRecipeDetails();
+  // }, [id, setrecipeDetailsData]);
+
   useEffect(() => {
     async function getRecipeDetails() {
-      const response = await fetch(`https://dummyjson.com/products/${id}`);
+      const response = await fetch(`http://localhost:5000/api/getItem/${id}`);
       const data = await response.json();
 
       if (data) {

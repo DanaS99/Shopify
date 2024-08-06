@@ -3,28 +3,49 @@ const axios = require('axios');
 const Item = require('../model/ItemShema');
 const mongoose = require('mongoose');
 
+
 exports.purchaseItem = async (req, res) => {
   try {
-    const { id, stock } = req.body;
-    const response = await axios.get(`https://dummyjson.com/products/${id}`);
-    const itemData = response.data;
+    const { id, title, price, stock, images } = req.body;
 
     const item = new Item({
-      id: itemData.id,
-      title: itemData.title,
-      price: itemData.price,
-      stock: itemData.stock,
-      images: itemData.thumbnail,
-      totalPrice: itemData.price * stock
+      id,
+      title,
+      price,
+      stock,
+      images,
+      totalPrice: price * stock,
     });
 
     await item.save();
     res.status(201).send(item);
   } catch (error) {
-    console.error('Error purchasing item:', error.message);
+    console.error('Error adding item:', error.message);
     res.status(500).send('Server error');
   }
 };
+// exports.purchaseItem = async (req, res) => {
+//   try {
+//     const { id, stock } = req.body;
+//     const response = await axios.get(`https://dummyjson.com/products/${id}`);
+//     const itemData = response.data;
+
+//     const item = new Item({
+//       id: itemData.id,
+//       title: itemData.title,
+//       price: itemData.price,
+//       stock: itemData.stock,
+//       images: itemData.thumbnail,
+//       totalPrice: itemData.price * stock
+//     });
+
+//     await item.save();
+//     res.status(201).send(item);
+//   } catch (error) {
+//     console.error('Error purchasing item:', error.message);
+//     res.status(500).send('Server error');
+//   }
+// };
 
 // exports.deleteItem = async (req, res) => {
 //   try {
@@ -80,17 +101,35 @@ exports.deleteItem = async (req, res) => {
 };
 
 
+// exports.getItem = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     // Validate the ID format
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).send('Invalid item ID');
+//     }
+
+//     // Fetch the item from the database
+//     const item = await Item.findById(id);
+
+//     if (!item) {
+//       return res.status(404).send('Item not found');
+//     }
+
+//     res.status(200).json(item);
+//   } catch (error) {
+//     console.error('Error fetching item:', error.message);
+//     res.status(500).send('Server error');
+//   }
+// };
+
 exports.getItem = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate the ID format
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send('Invalid item ID');
-    }
-
-    // Fetch the item from the database
-    const item = await Item.findById(id);
+    // Fetch the item from the database using the custom `id`
+    const item = await Item.findOne({ id });
 
     if (!item) {
       return res.status(404).send('Item not found');
@@ -102,7 +141,6 @@ exports.getItem = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
-
 
 exports.getAllItems = async (req, res) => {
   try {
