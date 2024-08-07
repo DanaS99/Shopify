@@ -10,28 +10,28 @@ function Product({ product }) {
   }
 
   return (
-    <div className='py-8 container mx-auto flex flex-wrap justify-center gap-10'>
+    <div className='container flex flex-wrap justify-center gap-10 py-8 mx-auto'>
       {recipeList && recipeList.length > 0 ? (
         recipeList.map((item) => <RecipeItem item={item} />)
       ) : (
         <div>
           {' '}
-          <Link to={`/cart/${product?.id}`} className='cursor-pointer'>
+          <Link to={`/cart/${product?._id}`} className='cursor-pointer'>
             <div className='group flex flex-col md:gap-3 p-4 md:h-[360px] mt-4 rounded-xl '>
-              <div className='relative bg-red-50 rounded-xl overflow-hidden'>
+              <div className='relative overflow-hidden bg-red-50 rounded-xl'>
                 <img
                   src={product?.images}
                   alt={product?.title}
-                  className='w-full h-full object-cover rounded-xl transform transition-transform hover:scale-105'
+                  className='object-cover w-full h-full transition-transform transform rounded-xl hover:scale-105'
                 />
                 {product?.stock === 0 && (
-                  <span className='absolute bottom-2 left-2 bg-black text-white text-xs font-semibold px-2 py-1 rounded'>
+                  <span className='absolute px-2 py-1 text-xs font-semibold text-white bg-black rounded bottom-2 left-2'>
                     Sold out
                   </span>
                 )}
               </div>
               <div className='mt-2 text-left'>
-                <h2 className='md:text-lg font-medium leading-5 md:leading-6 text-lighterblack hover:underline'>
+                <h2 className='font-medium leading-5 md:text-lg md:leading-6 text-lighterblack hover:underline'>
                   {product?.title}
                 </h2>
                 <p className='text-sm md:text-base text-lightblack'>

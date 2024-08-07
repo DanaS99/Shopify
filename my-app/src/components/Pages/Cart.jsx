@@ -119,8 +119,8 @@ function Cart({ product }) {
   }, [id, setrecipeDetailsData]);
 
   return (
-    <div className='container xxs:mx-5 xs:mx-auto lg:mx-32 p-5 '>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
+    <div className='container p-5 xxs:mx-5 xs:mx-auto lg:mx-32 '>
+      <div className='grid grid-cols-1 gap-10 md:grid-cols-2'>
         <div>
           <img
             src={recipeDetailsData?.images}
@@ -130,20 +130,20 @@ function Cart({ product }) {
         </div>
 
         <div className='w-60 xs:w-80'>
-          <h1 className='text-black text-3xl'>{recipeDetailsData?.title}</h1>
-          <h3 className='text-sm md:text-base text-lightblack mt-3'>
+          <h1 className='text-3xl text-black'>{recipeDetailsData?.title}</h1>
+          <h3 className='mt-3 text-sm md:text-base text-lightblack'>
             $ {recipeDetailsData?.price} CAD
           </h3>
 
           <div className='mb-6'>
             <label
-              className='block text-black text-xs font-normal mb-2 mt-4'
+              className='block mt-4 mb-2 text-xs font-normal text-black'
               htmlFor='quantity'
             >
               Quantity ({totalQuantityInCart} in cart)
             </label>
             <div className='flex items-center'>
-              <div className='flex items-center bg-white text-black border-2 border-slate-600 rounded'>
+              <div className='flex items-center text-black bg-white border-2 rounded border-slate-600'>
                 <button onClick={decreaseQuantity} className='px-2 py-1 '>
                   -
                 </button>
@@ -152,7 +152,7 @@ function Cart({ product }) {
                   type='text'
                   value={quantity}
                   onChange={handleInputChange}
-                  className='mx-4 w-12 text-center no-spinners'
+                  className='w-12 mx-4 text-center no-spinners'
                 />
                 <button onClick={increaseQuantity} className='px-2 py-1 '>
                   +
@@ -169,14 +169,14 @@ function Cart({ product }) {
           <div className='mb-6'>
             <button
               ref={addToCartButtonRef}
-              className='w-full py-2 mb-3 bg-white text-black border-2 border-slate-600 rounded hover:border-black relative'
+              className='relative w-full py-2 mb-3 text-black bg-white border-2 rounded border-slate-600 hover:border-black'
               onClick={combinedClickHandler}
               disabled={totalQuantityInCart >= recipeDetailsData?.stock}
             >
               {loading ? (
                 <img
                   src={loading2}
-                  className='animate-spin h-8 w-8 justify-center items-center ml-36'
+                  className='items-center justify-center w-8 h-8 animate-spin ml-36'
                 ></img>
               ) : (
                 'Add to cart'
@@ -210,12 +210,12 @@ function Cart({ product }) {
                   pointerEvents: 'auto', // Ensure it can be interacted with
                 }}
               >
-                <div className='bg-white p-6 rounded-none w-full relative border-2 border-black'>
-                  <div className='flex justify-between items-center mb-4'>
+                <div className='relative w-full p-6 bg-white border-2 border-black rounded-none'>
+                  <div className='flex items-center justify-between mb-4'>
                     <span> ✔ Item added to your cart</span>
                     <button
                       onClick={handleClosePopup}
-                      className='text-gray-400 text-3xl'
+                      className='text-3xl text-gray-400'
                     >
                       &times;
                     </button>
@@ -230,11 +230,11 @@ function Cart({ product }) {
                   </div>
                   <div className='flex flex-col'>
                     <Link to='/cart/allproducts'>
-                      <button className='w-full py-2 mb-3 bg-white text-black border-2 border-black rounded'>
+                      <button className='w-full py-2 mb-3 text-black bg-white border-2 border-black rounded'>
                         View my cart ({totalQuantityInCart})
                       </button>
                     </Link>
-                    <button className='w-full py-2 bg-buynowButton text-black rounded hover:h-11'>
+                    <button className='w-full py-2 text-black rounded bg-buynowButton hover:h-11'>
                       Check out
                     </button>
                     <Link to='/'>
@@ -247,12 +247,12 @@ function Cart({ product }) {
               </div>
             )}
 
-            <button className='w-full py-2 bg-buynowButton text-black rounded hover:h-11'>
+            <button className='w-full py-2 text-black rounded bg-buynowButton hover:h-11'>
               Buy it now
             </button>
           </div>
 
-          <p className='text-gray-600 text-sm leading-6 mb-4'>
+          <p className='mb-4 text-sm leading-6 text-gray-600'>
             This is a demonstration store. You can purchase products like this
             from{' '}
             <a href='#' className='underline'>
@@ -261,7 +261,7 @@ function Cart({ product }) {
             .
           </p>
 
-          <p className='text-gray-600 mb-4 text-sm leading-6'>
+          <p className='mb-4 text-sm leading-6 text-gray-600'>
             {recipeDetailsData?.description}
           </p>
         </div>
