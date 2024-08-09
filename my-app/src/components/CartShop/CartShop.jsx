@@ -71,49 +71,64 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
   //   updateTotalCart();
   // };
 
-  const handleRemoveFromCart = async () => {
+  // const handleRemoveFromCart = async () => {
+  //   try {
+  //     if (!cartItem.id) {
+  //       console.error('cartItem does not have an id field. Cannot delete.');
+  //       return;
+  //     }
+  
+  //     const response = await fetch(`http://localhost:5000/api/delete/${cartItem.id}`, {
+  //       method: 'DELETE',
+  //     });
+  
+  //     if (response.ok) {
+  //       dispatch(removeFromCart(cartItem.id));
+  //       updateTotalCart();
+  //     } else {
+  //       const errorText = await response.text();
+  //       console.error(`Failed to delete item from the database: ${errorText}`);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting item:', error);
+  //   }
+  // };
+  const handleRemoveFromCart = () => {
     try {
-      if (!cartItem.id) {
+      if (!cartItem._id) {
         console.error('cartItem does not have an id field. Cannot delete.');
         return;
       }
   
-      const response = await fetch(`http://localhost:5000/api/delete/${cartItem.id}`, {
-        method: 'DELETE',
-      });
-  
-      if (response.ok) {
-        dispatch(removeFromCart(cartItem.id));
-        updateTotalCart();
-      } else {
-        const errorText = await response.text();
-        console.error(`Failed to delete item from the database: ${errorText}`);
-      }
+      // Remove the item from the cart in Redux store
+      dispatch(removeFromCart(cartItem.id));
+      
+      // Update the total cart value
+      updateTotalCart();
     } catch (error) {
-      console.error('Error deleting item:', error);
+      console.error('Error removing item from the cart:', error);
     }
   };
-  
   
 
   return (
     <div className='p-4 sm:p-6 lg:p-8'>
-      <div className='flex flex-col lg:flex-row justify-between items-center mb-4'>
+      <div className='flex flex-col items-center justify-between mb-4 lg:flex-row'>
         <img
           src={cartItem?.images}
           alt={cartItem?.title}
-          className='w-full sm:w-36 lg:w-48 h-auto object-cover mb-4 lg:mb-0'
+          className='object-cover w-full h-auto mb-4 sm:w-36 lg:w-48 lg:mb-0'
         />
         <div className='flex-1 lg:ml-4'>
-          <h2 className='text-black text-base sm:text-lg lg:text-xl mb-2'>
+          <h2 className='mb-2 text-base text-black sm:text-lg lg:text-xl'>
             {cartItem?.title}
           </h2>
-          <span className='text-gray-500 text-sm sm:text-base lg:text-lg'>
+          <span className='text-sm text-gray-500 sm:text-base lg:text-lg'>
             ${cartItem?.price}
           </span>
         </div>
-        <div className='flex items-center justify-between w-full lg:w-2/5 mt-4 lg:mt-0'>
-          <div className='relative flex items-center bg-white px-2 py-1 text-black border-2 border-slate-600 rounded'>
+        <div className='flex items-center justify-between w-full mt-4 lg:w-2/5 lg:mt-0'>
+          <div className='relative flex items-center px-2 py-1 text-black bg-white border-2 rounded border-slate-600'>
             <button onClick={handleDecreaseQuantity} className='px-2 py-1'>
               -
             </button>
@@ -121,7 +136,7 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
               type='text'
               value={quantity}
               onChange={handleInputChange}
-              className='mx-2 w-12 text-center no-spinners'
+              className='w-12 mx-2 text-center no-spinners'
             />
             <button onClick={handleIncreaseQuantity} disabled={quantity >= cartItem.stock} className='px-2 py-1'>
               +
@@ -136,7 +151,7 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
           <button onClick={handleRemoveFromCart} className='ml-4'>
             <img src={bin} className='w-5 h-5' alt='Remove' />
           </button>
-          <span className='text-black text-base sm:text-lg lg:text-xl ml-4'>
+          <span className='ml-4 text-base text-black sm:text-lg lg:text-xl'>
             ${total.toFixed(2)}
           </span>
         </div>
