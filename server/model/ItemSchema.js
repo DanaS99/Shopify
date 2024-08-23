@@ -10,4 +10,5 @@ const ItemSchema = new mongoose.Schema({
   purchasedAt: { type: Date, default: Date.now }
 });
 
+
 module.exports = mongoose.model('Item', ItemSchema);

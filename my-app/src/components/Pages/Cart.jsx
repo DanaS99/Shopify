@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { GlobalContext } from '../Context/Context';
 import { loading2 } from '../../assets';
 import { addToCart } from '../Store/Slices/CartSlice';
+import { addToCart2 } from '../actions/cartAction'; // Adjust path as needed
 
 function Cart({ product }) {
   const [quantity, setQuantity] = useState(1);
@@ -23,18 +24,23 @@ function Cart({ product }) {
     }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (quantity > recipeDetailsData?.stock) {
       setStockExceeded(true);
       return; // Prevent adding to cart if stock is exceeded
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setShowPopup(true);
+    try {
+      const itemToAdd = { ...recipeDetailsData, quantity }; // Add quantity to the item data
+      await dispatch(addToCart2(itemToAdd)); // Dispatch the action to add the item to the cart
       setTotalQuantityInCart(totalQuantityInCart + quantity); // Update total quantity in cart
-    }, 1000); // Simulate a loading time of 1 second
+      setShowPopup(true); // Show popup if needed
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClosePopup = () => {

@@ -1,4 +1,7 @@
 const mongoose = require('mongoose')
-mongoose.set('strictQuery', false)
+require("dotenv").config();
+//mongoose.set('strictQuery', false)
 
-mongoose.connect('mongodb+srv://techlead:techlead@cluster0.baorezq.mongodb.net/').then(() => console.log('Connected to mongodb')).catch((e) => console.log(e))
+const mongo_url = process.env.MONGO_CONN;
+
+mongoose.connect(mongo_url).then(() => console.log('Connected to mongodb')).catch((e) => console.log(e))

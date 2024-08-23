@@ -1,7 +1,9 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { bin } from '../../assets';
-import { removeFromCart, updateQuantity } from '../Store/Slices/CartSlice';
+import { removeFromCart, updateQuantity, setCart } from '../Store/Slices/CartSlice';
 
 const CartShop = ({ cartItem, updateTotalCart }) => {
   console.log('Rendering CartShop component');
@@ -26,7 +28,20 @@ const CartShop = ({ cartItem, updateTotalCart }) => {
     updateTotal(quantity);
   }, [quantity]);
 
-
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/cart');
+        const cartData = await response.json();
+        dispatch(setCart(cartData.items));  // Set the cart in Redux state
+      } catch (error) {
+        console.error('Error fetching cart:', error);
+      }
+    };
+    
+    fetchCart();
+  }, [dispatch]);
+  
 
   const handleIncreaseQuantity = () => {
     console.log('Attempting to increase quantity:', quantity);

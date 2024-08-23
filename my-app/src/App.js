@@ -4,6 +4,8 @@ import Cart from './components/Pages/Cart';
 import NavBar from './components/NavBar/NavBar';
 import CartTile from './components/Pages/CartTile';
 import AdminPanel from './components/AdminPanel/AdminPanel';
+import Signup from './components/Auth/Signup';
+import Login from './components/Auth/Login';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Route path='/cart/:id' element={<Cart />} />
         <Route path='/cart/allproducts' element={<CartTile />} />
         <Route path='/admin' element={<AdminPanel />} />
+        <Route path='/signup' element={<Signup />} />
+        <Route path='/login' element={<Login />} />
       </Routes>
     </div>
   );
