@@ -1,9 +1,17 @@
 import React, { useState }  from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom';
+import { FaGoogle, FaFacebook, FaGithub } from 'react-icons/fa';
+
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+ 
+  const loginWithGoogle = () => {
+    window.open("http://localhost:5000/auth/google/callback", "_self")
+  }
+
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -41,9 +49,9 @@ const Login = () => {
   
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-5 text-center">Log In</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <h2 className="mb-5 text-2xl font-bold text-center">Log In</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Email</label>
@@ -52,7 +60,7 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded mt-1"
+              className="w-full p-2 mt-1 border border-gray-300 rounded"
               placeholder="Enter your email"
               required
             />
@@ -64,18 +72,21 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded mt-1"
+              className="w-full p-2 mt-1 border border-gray-300 rounded"
               placeholder="Enter your password"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded mt-4 hover:bg-blue-600"
+            className="w-full p-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600"
           >
             Log In
           </button>
         </form>
+        <button className="p-3 text-white bg-red-500 rounded-full hover:bg-red-600" onClick={loginWithGoogle}>
+              <FaGoogle />
+            </button>
         {message && (
           <p className="mt-4 text-center text-red-500">{message}</p>
         )}

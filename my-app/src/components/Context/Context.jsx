@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export const GlobalContext = createContext(null);
 
 export default function GlobalState({ children }) {
+    
     const [searchParam, setSearchParam] = useState("");
     const [loading, setLoading] = useState(false);
     const [recipeList, setrecipeList] = useState([]);

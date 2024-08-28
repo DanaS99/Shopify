@@ -5,33 +5,36 @@ const UserSchema = require('../model/UserSchema');
 
 const mongoose = require('mongoose');
 
+// Backend
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const users = await UserSchema.findOne({ email });
-    if (users) {
-      return res
-        .status(409)
-        .json({
-          message: 'User is already found, you can login',
-          success: false,
-        });
+    const existingUser = await UserSchema.findOne({ email });
+
+    if (existingUser) {
+      return res.status(409).json({
+        message: 'User already exists, please log in',
+        success: false,
+      });
     }
 
-    const userModel = new UserSchema({ name, email, password });
-    userModel.password = await bcrypt.hash(password, 10);
-    await userModel.save();
-    res.status(201).json({
-      message: 'Signup successfully',
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new UserSchema({ name, email, password: hashedPassword });
+    await newUser.save();
+
+    return res.status(201).json({
+      message: 'Signup successful',
       success: true,
     });
-  } catch (e) {
-    res.status(201).json({
-      message: 'Internal Server error',
+  } catch (error) {
+    console.error('Error during signup:', error);
+    return res.status(500).json({
+      message: 'Internal Server Error',
       success: false,
     });
   }
 };
+
 
 exports.login = async (req, res) => {
   try {

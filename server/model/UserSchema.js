@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+    googleId: {
+        type: String,
+        unique: true
+    },
     name: {
         type: String,
         required: true,
@@ -10,10 +14,17 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    password: {
+    password: { 
         type: String,
-        required: true,
-    }    
+        required: function() {
+          return !this.googleId; // Only required if the user didn't sign up with Google
+        }
+      },
+    
+    image: {
+        type: String,
+    }
 });
 
-module.exports = mongoose.model('user', UserSchema);
+userdb = mongoose.model('user', UserSchema);
+module.exports = userdb;
