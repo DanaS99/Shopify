@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export const GlobalContext = createContext(null);
 
 export default function GlobalState({ children }) {
-    
+    const [user, setUser] = useState(null)
     const [searchParam, setSearchParam] = useState("");
     const [loading, setLoading] = useState(false);
     const [recipeList, setrecipeList] = useState([]);
@@ -42,7 +42,7 @@ export default function GlobalState({ children }) {
     }
 
     return (
-        <GlobalContext.Provider value={{ searchParam, loading, recipeList, setSearchParam, handleSubmit, recipeDetailsData, setrecipeDetailsData, notFound }}>
+        <GlobalContext.Provider value={{ user, setUser, searchParam, loading, recipeList, setSearchParam, handleSubmit, recipeDetailsData, setrecipeDetailsData, notFound }}>
             {children}
         </GlobalContext.Provider>
     );

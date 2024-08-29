@@ -5,19 +5,21 @@ import { GlobalContext } from '../Context/Context';
 import { Logo, SearchIcon } from '../../assets';
 import Shopping from '../../assets/Shopping';
 import { FaUser } from 'react-icons/fa';
+import { photo } from "../../assets"
 import Signup from '../Auth/Signup';
-import Profile from './Profile';
 import axios from 'axios';
 
 const NavBar = () => {
   const [userdata, setUserdata] = useState({});
-  console.log('userdata', userdata);
+
   const getUser = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/auth/login/success', {
-        withCredentials: true,
-      });
-      console.log('response', response.data);
+      const response = await axios.get(
+        'http://localhost:5000/auth/login/success',
+        {
+          withCredentials: true,
+        }
+      );
       setUserdata(response.data.user);
     } catch (error) {
       console.log('error', error);
@@ -40,21 +42,24 @@ const NavBar = () => {
   };
 
   const logOut = () => {
-    window.open("http://localhost:5000/auth/logout", "_self")
-  }
-  
+    localStorage.removeItem('token');
+    localStorage.removeItem('userName');
+    window.open('http://localhost:5000/auth/logout', '_self');
+  };
+
+  const userName = localStorage.getItem('userName');
 
   return (
     <div>
       <header className='flex items-center justify-between px-5 pb-3 xl:px-24 pt-9 lg:px-2 lg:mx-0'>
         <div className='items-center justify-start hidden w-1/3 md:flex'>
-          <a href='/' className='p-3 cursor-pointer'>
+          <Link to='/' className='p-3 cursor-pointer'>
             <img
               src={Logo}
               className='max-w-[120px] h-auto w-full sm:max-w-[150px]'
               alt='Logo'
             />
-          </a>
+          </Link>
         </div>
         <div className='flex items-center justify-start w-1/3 md:hidden'>
           <img
@@ -102,25 +107,45 @@ const NavBar = () => {
           </Link>
         </div>
 
+        {/* {Object.keys(userdata).length > 0 ? (
+          <>
+            <button>{userdata.name}</button>
+            <p className='cursor-pointer' onClick={logOut}>Logout</p>
+            <img
+              className='rounded-full w-12'
+              src={userdata.image}
+              alt={userdata.name}
+            />
+          </>
+        ) : (
+          <button
+            onClick={() => document.getElementById('my_modal_5').showModal()}
+            className='flex items-center gap-2 px-6 text-black rounded-full btn bg-green'
+          >
+            <FaUser /> Signup
+          </button>
+        )} */}
 
-        {
-          Object.keys(userdata)?.length > 0 ? (
-            <>
-              <button>{userdata?.name}</button>
-              <p className='cursor-pointer' onClick={logOut}>Logout</p>
-              <img className='rounded-full w-12' src={userdata?.image} alt="image"/>
-            </>
-          ) : (
-            <button
-          onClick={() => document.getElementById('my_modal_5').showModal()}
-          className='flex items-center gap-2 px-6 text-black rounded-full btn bg-green'
-        >
-          <FaUser /> Signup
-        </button>
-          )
-        }
-
-        
+        {userName || Object.keys(userdata).length > 0 ? (
+          <div className='flex items-center space-x-4'>
+            <p>{userdata?.name || userName}</p>
+            <img
+              className='rounded-full w-12'
+              src={userdata?.image || photo}
+              alt={userdata?.name || userName}
+            />
+            <button className='p-2' onClick={logOut}>
+              Logout
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => document.getElementById('my_modal_5').showModal()}
+            className='flex items-center gap-2 px-6 text-black rounded-full btn bg-green'
+          >
+            <FaUser /> Signup
+          </button>
+        )}
 
         <Signup />
 

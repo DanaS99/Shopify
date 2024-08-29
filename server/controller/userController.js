@@ -38,7 +38,7 @@ exports.signup = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
     const users = await UserSchema.findOne({ email });
     if (!users) {
       return res
@@ -49,6 +49,7 @@ exports.login = async (req, res) => {
         });
     }
 
+    console.log(users);
     const isPassEqual = await bcrypt.compare(password, users.password);
 
     if (!isPassEqual) {
@@ -61,7 +62,7 @@ exports.login = async (req, res) => {
     }
 
     const jwtToken = jwt.sign(
-      { email: users.email, _id: users._id },
+      { name: users.name, email: users.email, _id: users._id },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );

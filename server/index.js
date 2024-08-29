@@ -73,7 +73,7 @@ passport.deserializeUser(async (id, done) => {
 
 // Routes
 app.use('/api', itemRoutes);
-app.use('/api/users', userRoutes);
+app.use('/auth/users', userRoutes);
 app.use('/auth', googleAuthRoutes);
 
 app.listen(port, () => {

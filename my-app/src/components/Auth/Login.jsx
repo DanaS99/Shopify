@@ -7,15 +7,18 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
  
-  const loginWithGoogle = () => {
-    window.open("http://localhost:5000/auth/google/callback", "_self")
-  }
+ const loginWithGoogle = () => {
+   window.open("http://localhost:5000/auth/google/callback", "_self")
+   }
 
 
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
+
+
 
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -31,18 +34,21 @@ const Login = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post('http://localhost:5000/auth/login', {
+      const response = await axios.post('http://localhost:5000/auth/users/login', {
         email: formData.email,
         password: formData.password,
       });
   
       if (response.data.success) {
+        console.log(response.data);
         localStorage.setItem('token', response.data.jwtToken);
+        localStorage.setItem('userName', response.data.name); // Save user name
         navigate('/');
       } else {
         setMessage(response.data.message);
       }
     } catch (error) {
+      console.log(error);
       setMessage('An error occurred. Please try again.');
     }
   };
@@ -84,9 +90,9 @@ const Login = () => {
             Log In
           </button>
         </form>
-        <button className="p-3 text-white bg-red-500 rounded-full hover:bg-red-600" onClick={loginWithGoogle}>
+         <button className="p-3 text-white bg-red-500 rounded-full hover:bg-red-600" onClick={loginWithGoogle}>
               <FaGoogle />
-            </button>
+            </button> 
         {message && (
           <p className="mt-4 text-center text-red-500">{message}</p>
         )}
