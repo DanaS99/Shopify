@@ -14,7 +14,7 @@ const NavBar = () => {
   console.log('userdata', userdata);
   const getUser = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/login/success', {
+      const response = await axios.get('http://localhost:5000/auth/login/success', {
         withCredentials: true,
       });
       console.log('response', response.data);
@@ -23,9 +23,6 @@ const NavBar = () => {
       console.log('error', error);
     }
   };
-  
-  
-  
 
   useEffect(() => {
     getUser();
@@ -41,6 +38,11 @@ const NavBar = () => {
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
   };
+
+  const logOut = () => {
+    window.open("http://localhost:5000/auth/logout", "_self")
+  }
+  
 
   return (
     <div>
@@ -102,10 +104,11 @@ const NavBar = () => {
 
 
         {
-          Object.keys(userdata).length > 0 ? (
+          Object.keys(userdata)?.length > 0 ? (
             <>
-              <button>{userdata.name}</button>
-              <img src="" alt="image"/>
+              <button>{userdata?.name}</button>
+              <p className='cursor-pointer' onClick={logOut}>Logout</p>
+              <img className='rounded-full w-12' src={userdata?.image} alt="image"/>
             </>
           ) : (
             <button
